@@ -59,7 +59,7 @@ const AddUser = ({ onAppendUser }) => {
   };
 
   return (
-    <div>
+    <>
       {!isEmpty(error) && (
         <ErrorModal
           onCancelModal={cancelModalHandler}
@@ -86,7 +86,7 @@ const AddUser = ({ onAppendUser }) => {
           <Button type="submit">Add User</Button>
         </form>
       </Card>
-    </div>
+    </>
   );
 };
 
