@@ -1,23 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
+import isEmpty from "lodash/isEmpty";
+import { nanoid } from "nanoid";
 
 import classes from "./AddUser.module.css";
 import Card from "../UI/Card";
 import Button from "../UI/Button";
+import ErrorModal from "../UI/ErrorModal";
 
-const AddUser = () => {
+const AddUser = ({ onAppendUser }) => {
+  const [enteredUsername, setEnteredUsername] = useState("");
+  const [enteredAge, setEnteredAge] = useState("");
+  const [error, setError] = useState({});
+
+  const resetUserInput = () => {
+    setEnteredUsername("");
+    setEnteredAge("");
+  };
+
+  const usernameChangeHandler = (e) => {
+    const username = e.target.value;
+    setEnteredUsername(username);
+  };
+
+  const ageChangeHandler = (e) => {
+    const age = e.target.value;
+    setEnteredAge(age);
+  };
+
   const addUserHandler = (e) => {
     e.preventDefault();
+
+    if (isEmpty(enteredUsername) || isEmpty(enteredAge)) {
+      setError({
+        title: "Invalid input",
+        message: "Please enter a valid name OR an age (non-empty values).",
+      });
+      return;
+    }
+    if (Number(enteredAge) < 0) {
+      setError({
+        title: "Invalid age",
+        message: "Please enter a valid age (> 0).",
+      });
+      return;
+    }
+
+    onAppendUser({
+      id: nanoid(),
+      name: enteredUsername,
+      age: enteredAge,
+    });
+
+    resetUserInput();
   };
+
+  const cancelModalHandler = () => {
+    setError({});
+  };
+
   return (
-    <Card className={classes.input}>
-      <form onChange={addUserHandler}>
-        <label htmlFor="username">Username</label>
-        <input id="username" type="text" />
-        <label htmlFor="age">Age (Year)</label>
-        <input id="age" type="number" />
-        <Button type="submit">Add User</Button>
-      </form>
-    </Card>
+    <div>
+      {!isEmpty(error) && (
+        <ErrorModal
+          onCancelModal={cancelModalHandler}
+          title={error.title}
+          message={error.message}
+        />
+      )}
+      <Card className={classes.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            value={enteredUsername}
+            onChange={usernameChangeHandler}
+          />
+          <label htmlFor="age">Age (Year)</label>
+          <input
+            id="age"
+            type="number"
+            value={enteredAge}
+            onChange={ageChangeHandler}
+          />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </div>
   );
 };
 
