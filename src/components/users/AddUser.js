@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import { nanoid } from "nanoid";
 
@@ -8,6 +8,9 @@ import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
 
 const AddUser = ({ onAppendUser }) => {
+  const usernameInputRef = useRef();
+  const ageInputRef = useRef();
+
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredAge, setEnteredAge] = useState("");
   const [error, setError] = useState({});
@@ -29,6 +32,8 @@ const AddUser = ({ onAppendUser }) => {
 
   const addUserHandler = (e) => {
     e.preventDefault();
+
+    console.log({ usernameInputRef, ageInputRef });
 
     if (isEmpty(enteredUsername) || isEmpty(enteredAge)) {
       setError({
@@ -75,6 +80,7 @@ const AddUser = ({ onAppendUser }) => {
             type="text"
             value={enteredUsername}
             onChange={usernameChangeHandler}
+            ref={usernameInputRef}
           />
           <label htmlFor="age">Age (Year)</label>
           <input
@@ -82,6 +88,7 @@ const AddUser = ({ onAppendUser }) => {
             type="number"
             value={enteredAge}
             onChange={ageChangeHandler}
+            ref={ageInputRef}
           />
           <Button type="submit">Add User</Button>
         </form>
